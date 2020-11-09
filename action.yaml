@@ -1,0 +1,13 @@
+name: verify-ci-status
+description: Verifies that a CI status is passing before proceeding.
+inputs:
+  GITHUB_TOKEN:
+    required: true
+  context:
+    required: false
+    default: continuous-integration/jenkins/branch
+runs:
+  using: composite
+  steps: 
+    - run: GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }} CONTEXT=${{ inputs.context }} $GITHUB_ACTION_PATH/run.sh
+      shell: bash
