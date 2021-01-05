@@ -2,7 +2,7 @@
 set -euxo pipefail
 if [ $GITHUB_EVENT_NAME = check_run ]
 then
-  jq < $GITHUB_EVENT_PATH
+  jq . < $GITHUB_EVENT_PATH
   if [ $(jq -r .check_run.name < $GITHUB_EVENT_PATH) \!= $NAME ]
   then
     echo wrong check
