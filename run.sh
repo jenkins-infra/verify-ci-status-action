@@ -1,16 +1,26 @@
 #!/bin/bash
 set -euxo pipefail
-if [ $GITHUB_EVENT_NAME = status ]
+if [ $GITHUB_EVENT_NAME = check_run ]
 then
-  state=$(jq -r .state < $GITHUB_EVENT_PATH)
-  context=$(jq -r .context < $GITHUB_EVENT_PATH)
-  sha=$(jq -r .sha < $GITHUB_EVENT_PATH)
-  if [ $state = success -a $context = $CONTEXT -a $sha = $GITHUB_SHA ]
+  jq < $GITHUB_EVENT_PATH
+  if [ $(jq -r .check_run.name < $GITHUB_EVENT_PATH) \!= $NAME ]
   then
-    echo passing
-  else
-    echo not passing, or wrong status
+    echo wrong check
     exit 1
+  elif [ $(jq -r .check_run.status < $GITHUB_EVENT_PATH) \!= completed ]
+  then
+    echo not completed
+    exit 1
+  elif [ $(jq -r .check_run.conclusion < $GITHUB_EVENT_PATH) \!= success ]
+  then
+    echo did not succeed
+    exit 1
+  elif [ $(jq -r .check_run.head_sha < $GITHUB_EVENT_PATH) \!= $GITHUB_SHA ]
+  then
+    echo unexpected commit
+    exit 1
+  else
+    echo passing
   fi
 elif [ $GITHUB_EVENT_NAME = workflow_dispatch ]
 then

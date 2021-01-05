@@ -3,11 +3,11 @@ description: Verifies that a CI status is passing before proceeding.
 inputs:
   GITHUB_TOKEN:
     required: true
-  context:
+  name:
     required: false
-    default: continuous-integration/jenkins/branch
+    default: Jenkins
 runs:
   using: composite
   steps: 
-    - run: GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }} CONTEXT=${{ inputs.context }} $GITHUB_ACTION_PATH/run.sh
+    - run: GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }} NAME=${{ inputs.name }} $GITHUB_ACTION_PATH/run.sh
       shell: bash
