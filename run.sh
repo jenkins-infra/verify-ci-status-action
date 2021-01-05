@@ -2,20 +2,19 @@
 set -euxo pipefail
 if [ $GITHUB_EVENT_NAME = check_run ]
 then
-  jq . < $GITHUB_EVENT_PATH
-  if [ $(jq -r .check_run.name < $GITHUB_EVENT_PATH) \!= $NAME ]
+  if [ "$(jq -r .check_run.name < $GITHUB_EVENT_PATH)" \!= "$NAME" ]
   then
     echo wrong check
     exit 1
-  elif [ $(jq -r .check_run.status < $GITHUB_EVENT_PATH) \!= completed ]
+  elif [ "$(jq -r .check_run.status < $GITHUB_EVENT_PATH)" \!= completed ]
   then
     echo not completed
     exit 1
-  elif [ $(jq -r .check_run.conclusion < $GITHUB_EVENT_PATH) \!= success ]
+  elif [ "$(jq -r .check_run.conclusion < $GITHUB_EVENT_PATH)" \!= success ]
   then
     echo did not succeed
     exit 1
-  elif [ $(jq -r .check_run.head_sha < $GITHUB_EVENT_PATH) \!= $GITHUB_SHA ]
+  elif [ "$(jq -r .check_run.head_sha < $GITHUB_EVENT_PATH)" \!= $GITHUB_SHA ]
   then
     echo unexpected commit
     exit 1
@@ -24,6 +23,8 @@ then
   fi
 elif [ $GITHUB_EVENT_NAME = workflow_dispatch ]
 then
+  echo TODO not yet reimplemented for Checks
+  exit 1
   if gh api /repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/statuses | jq -e '.[] | select(.context == "'$CONTEXT'" and .state == "success")'
   then
     echo passing
