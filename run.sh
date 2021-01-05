@@ -23,15 +23,7 @@ then
   fi
 elif [ $GITHUB_EVENT_NAME = workflow_dispatch ]
 then
-  echo TODO not yet reimplemented for Checks
-  exit 1
-  if gh api /repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/statuses | jq -e '.[] | select(.context == "'$CONTEXT'" and .state == "success")'
-  then
-    echo passing
-  else
-    echo not passing
-    exit 1
-  fi
+  gh api -X GET -F check_name="$NAME" -F status=completed /repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs | jq -e '.check_runs | .[] | select(.conclusion == "success") | .id'
 else
   echo unknown event type $GITHUB_EVENT_NAME
   exit 1
