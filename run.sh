@@ -1,30 +1,45 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
+
+function outputResult() {
+  local result=$1
+  local exitCode=$2
+
+  echo $result
+
+  if [ $OUTPUT_RESULT = true ]; then
+    echo "::set-output name=result::$result"
+  else
+    exit $exitCode
+  fi
+}
+
 if [ $GITHUB_EVENT_NAME = check_run ]
 then
   if [ "$(jq -r .check_run.name < $GITHUB_EVENT_PATH)" \!= "$NAME" ]
   then
-    echo wrong check
-    exit 1
+    outputResult wrong-check 1
   elif [ "$(jq -r .check_run.status < $GITHUB_EVENT_PATH)" \!= completed ]
   then
-    echo not completed
-    exit 1
+    outputResult not-completed 1
   elif [ "$(jq -r .check_run.conclusion < $GITHUB_EVENT_PATH)" \!= success ]
   then
-    echo did not succeed
-    exit 1
+    outputResult check-failed 1
   elif [ "$(jq -r .check_run.head_sha < $GITHUB_EVENT_PATH)" \!= $GITHUB_SHA ]
   then
-    echo unexpected commit
-    exit 1
+    outputResult unexpected-commit 1
   else
-    echo passing
+    outputResult passed 0
   fi
 elif [ $GITHUB_EVENT_NAME = workflow_dispatch ]
 then
-  gh api -X GET -F check_name="$NAME" -F status=completed /repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs | jq -e '.check_runs | .[] | select(.conclusion == "success") | .id'
+  ID=$(gh api -X GET -F check_name="$NAME" -F status=completed /repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs | jq -e '.check_runs | .[] | select(.conclusion == "success") | .id' || echo 'failed')
+
+  if [[ $ID != 'failed' ]]; then
+    outputResult passed 0
+  else
+    outputResult failed 1
+  fi
 else
-  echo unknown event type $GITHUB_EVENT_NAME
-  exit 1
+  outputResult unknown-event-type-$GITHUB_EVENT_NAME 1
 fi
