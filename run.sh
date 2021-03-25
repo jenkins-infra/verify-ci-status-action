@@ -30,7 +30,7 @@ then
   then
     outputResult unexpected-commit 1
   else
-    outputResult passed 0
+    outputResult success 0
   fi
 elif [ $GITHUB_EVENT_NAME = workflow_dispatch ]
 then
