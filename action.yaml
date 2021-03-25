@@ -14,7 +14,7 @@ inputs:
 outputs:
   result:
     value: ${{ steps.verify-ci-status.outputs.result }}
-    description: `passed` if the check is success otherwise a message describing the result
+    description: passed if the check is success otherwise a message describing the result
 runs:
   using: composite
   steps: 
