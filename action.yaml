@@ -13,10 +13,11 @@ inputs:
     default: Jenkins
 outputs:
   result:
-    value: ${{ steps.verify-ci-status.outputs.ci-result }}
+    value: ${{ steps.verify-ci-status.outputs.result }}
     description: passed if the check is success otherwise a message describing the result
 runs:
   using: composite
   steps: 
     - run: GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }} OUTPUT_RESULT=${{ inputs.output_result }} NAME=${{ inputs.name }} $GITHUB_ACTION_PATH/run.sh
+      id: verify-ci-status
       shell: bash
