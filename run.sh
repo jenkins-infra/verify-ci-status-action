@@ -37,7 +37,7 @@ then
   ID=$(gh api -X GET -F check_name="$NAME" -F status=completed /repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs | jq -e '.check_runs | .[] | select(.conclusion == "success") | .id' || echo 'failed')
 
   if [[ $ID != 'failed' ]]; then
-    outputResult passed 0
+    outputResult success 0
   else
     outputResult failed 1
   fi
