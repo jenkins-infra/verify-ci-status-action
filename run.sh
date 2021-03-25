@@ -9,6 +9,7 @@ function outputResult() {
 
   if [ $OUTPUT_RESULT = true ]; then
     echo "::set-output name=result::$result"
+    exit 0
   else
     exit $exitCode
   fi
