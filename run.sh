@@ -8,7 +8,7 @@ function outputResult() {
   echo $result
 
   if [ $OUTPUT_RESULT = true ]; then
-    echo "::set-output name=result::$result"
+    echo "::set-output name=ci-result::$result"
     exit 0
   else
     exit $exitCode

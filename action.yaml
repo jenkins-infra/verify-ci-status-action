@@ -5,7 +5,7 @@ inputs:
     description: Token to run with, defaults to the repository GITHUB_TOKEN
     required: true
   output_result:
-    description: Outputs the result as 'result = passed' if check is passed or an error result if not
+    description: Outputs the result as 'ci-result = passed' if check is passed or an error result if not
     required: false
   name:
     required: false
@@ -13,7 +13,7 @@ inputs:
     default: Jenkins
 outputs:
   result:
-    value: ${{ steps.verify-ci-status.outputs.result }}
+    value: ${{ steps.verify-ci-status.outputs.ci-result }}
     description: passed if the check is success otherwise a message describing the result
 runs:
   using: composite
