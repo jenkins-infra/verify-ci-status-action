@@ -11,6 +11,10 @@ inputs:
     required: false
     description: Name of the check to validate against
     default: Jenkins
+outputs:
+  result:
+    value: ${{ steps.verify-ci-status.outputs.result }}
+    description: `passed` if the check is success otherwise a message describing the result
 runs:
   using: composite
   steps: 
