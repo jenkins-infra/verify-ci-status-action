@@ -17,7 +17,11 @@ outputs:
     description: success if the check succeeded otherwise a message describing the result
 runs:
   using: composite
-  steps: 
-    - run: GITHUB_TOKEN=${{ inputs.GITHUB_TOKEN }} OUTPUT_RESULT=${{ inputs.output_result }} NAME=${{ inputs.name }} $GITHUB_ACTION_PATH/run.sh
+  steps:
+    - run: $GITHUB_ACTION_PATH/run.sh
       id: verify-ci-status
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        NAME: ${{ inputs.name }}
+        OUTPUT_RESULT: ${{ inputs.output_result }}
