@@ -8,7 +8,7 @@ function outputResult() {
   echo $result
 
   if [ $OUTPUT_RESULT = true ]; then
-    echo "::set-output name=result::$result"
+    echo "result=$result" >> $GITHUB_OUTPUT
     exit 0
   else
     exit $exitCode
